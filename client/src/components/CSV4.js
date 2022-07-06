@@ -85,7 +85,7 @@ export default function CSV (){
             week:weekNumber
         } 
 
-        axios.post("http://localhost:5000/analyst/add", data)
+        axios.post("/analyst/add", data)
         .then(()=>console.log('Success'))
         .catch(err=>console.log('Error:'+err))
 
@@ -120,7 +120,7 @@ export default function CSV (){
 
      const cal=()=>{
 
-      axios.get('http://localhost:5000/analyst/')
+      axios.get('/analyst/')
       .then((res)=>{
         const arr = {
           week: res.data.week

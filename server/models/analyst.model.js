@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
-
+import moment from 'moment'
 
 
 const Schema = mongoose.Schema
 
 const analystSchema =  new Schema({
+    empId: String,
     TotalTime:Number,
     ActiveTime:Number,
-    week:Number,
+    week:{type:Number,default: () => moment().format("W")},
+    createdAt:{type: Date,
+        default: () => moment().format("M D YYYY")}
 },)
 
 const Analyst  = mongoose.model('Analyst',analystSchema)

@@ -71,6 +71,10 @@
     overflow: hidden;
   }
 }
+.pro-menu-item a.active {
+  color: #fece00;  /* put any color you want */
+  font-weight: 500;
+}
 .side-menu-footer{
   width: 100%;
   background: #333;
