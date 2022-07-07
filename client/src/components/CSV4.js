@@ -97,17 +97,23 @@ export default function CSV (){
     // },[])
 
     useEffect (()=>{
-      var va=0;var sb = 0
+      var va=0;var sb = 0;var za=0;
       car.map((item)=>{
-        if (item.URL.match(/google\.com|g,/gm) !== null){
+        if (item.URL.match(/sagemaker\.aws\/#\/work\//gm) !== null){
            va += Number(item['Active(sec)'])
            sb += Number(item['Total(sec)'])
         }
+        if (item.URL.match(/inAll/gm) !== null){
+           za = item['Active(sec)']
+        }
+       
         return null
       })
       console.log(sb)
+      console.log(za)
       console.log(va)
-      setArr({Totalsec:sb,AciveSec:va})
+      const activesec = convert(va,'cal')
+      setArr({Totalsec:sb,AciveSec:activesec})
       console.log(car)
      
      },[car])
@@ -153,8 +159,8 @@ export default function CSV (){
             <thead>
                 <tr>
                     <th>URL</th>
-                    <th>Active(sec)</th>
                     <th>Total(sec)</th>
+                    <th>Active(sec)</th>
                     <th>Domain</th>
                     <th>Page</th>
                     <th>Title</th>
@@ -162,7 +168,7 @@ export default function CSV (){
             </thead>
             <tbody>
             {car.map((item, index) => {
-            if (item.URL.match(/google\.com|g,/gm) !== null)
+            if (item.URL.match(/sagemaker\.aws\/#\/work\//gm) !== null)
               return (
                 <>
                   <tr id={index}>
@@ -193,6 +199,7 @@ export default function CSV (){
           </ol>
        )
          )}
+         <p>{arr.AciveSec.hours} Hours:{arr.AciveSec.minutes} Minutes</p>
          </div></div>
         </>
     )

@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import PropTypes from 'prop-types';
 import { connect , useSelector} from "react-redux";
 import { logoutUser } from "../actions/authActions";
+import {checkIn} from '../actions/checkActions';
 import axios from "axios";
 import { ToastContainer,toast } from "react-toastify";
 import moment from 'moment';
@@ -13,6 +14,9 @@ const Dashboard = (props) =>{
     const [checkT,setCheckT] = useState();
     const [total,setTotal] = useState();
     const [remain,setRemain] = useState();
+    // const [outTime,setOutTime] = useState();
+    const [isDisabled,setDisabled] = useState(false);
+     
 
     const name =  useSelector( state=> state.auth.user.name);
     const img = "https://ui-avatars.com/api/?name="+name
@@ -26,10 +30,14 @@ const Dashboard = (props) =>{
     toast.success('Welcome '+name)
    }
 
-    function calc(){
+    function calc(checkoutTime){
         // setInterval(()=>{})
         const time = new Date()
-    var a = moment('7:00 pm','hh:mm a')
+        // const checkoutTime = moment(ctime).add(570,'minutes').format('hh:mm a');
+        const f = checkoutTime;
+        console.log(checkoutTime)
+
+    var a = moment(f,'hh:mm a')
     var b = moment(time,'hh:mm a')
     var c = moment.duration(a.diff(b));
     var d = c.hours()+'Hours &  Minutes '+c.minutes();
@@ -37,10 +45,10 @@ const Dashboard = (props) =>{
         setRemain(d)
    }
 
-   useEffect(()=>{
-        calc()
-   })
-   setInterval(()=>{calc()},60000)
+//    useEffect(()=>{
+//         calc()
+//    },[])
+//    setInterval(()=>{calc()},60000)
     const onCheckout = e =>{
         e.preventDefault();
         const cOut = new Date();
@@ -57,6 +65,9 @@ const Dashboard = (props) =>{
     const onCheck = e =>{
         e.preventDefault();
         const time = new Date()
+        const checkoutTime = moment(time).add(570,'minutes').format('hh:mm a');
+        console.log(checkoutTime)
+      
         moment.defaultFormat = 'hh:mm'
         console.log(time)
         var timeNow = moment(time).format('hh:mm a');
@@ -64,15 +75,21 @@ const Dashboard = (props) =>{
         var a = moment('6:00 pm','hh:mm a')
         var b = moment(time,'hh:mm a')
         var c = moment.duration(a.diff(b));
-
-        
+        calc(checkoutTime)
+        // console.log(outTime)
+        setInterval(()=>{calc(checkoutTime)},60000)
         console.log(c.hours()+'Hours &  Minutes '+c.minutes())
         console.log(moment('08:30',moment.defaultFormat).fromNow())
         setTime(timeNow);
+        setDisabled(true)
+        // setOutTime(checkoutTime)
         // setTimeout(()=>{ var d = c.hours()+'Hours &  Minutes '+c.minutes();
         // console.log(c.hours()+'Hours &  Minutes '+c.minutes())
         // setRemain(d)},1000)
-       
+        const check = {
+            timeNow
+        }
+        props.checkIn(check)
     }
 
     const onLogout = e =>{
@@ -91,7 +108,7 @@ const Dashboard = (props) =>{
         >
             Logout
         </button><br/>
-        <button onClick={onCheck}>Check In</button>
+        <button onClick={onCheck} disabled={isDisabled}>Check In</button>
         <button onClick={onCheckout}>CheckOut</button>
         <p>Your Check In: {ctime}</p>
         <p>Your Check Out: {checkT}</p>
@@ -111,4 +128,4 @@ const mapStateToProps = state =>({
     auth: state.auth
 });
 
-export default connect(mapStateToProps,{logoutUser})(Dashboard);
+export default connect(mapStateToProps,{logoutUser,checkIn})(Dashboard);
