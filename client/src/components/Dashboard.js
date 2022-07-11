@@ -27,7 +27,7 @@ const Dashboard = (props) =>{
    },[])
 
    const toasty =()=>{
-    toast.success('Welcome '+name)
+    toast.success('Welcome '+name+'🧑‍💻')
    }
 
     function calc(checkoutTime){

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authActions';
 import {useNavigate} from 'react-router-dom'
+import { ToastContainer,toast } from "react-toastify";
 
 
 const Login =(props)=>{
@@ -24,12 +25,32 @@ const Login =(props)=>{
         if(props.auth.isAuthenticated){
             navigate('/dashboard')
         }
+        // if(props.errors){
+        //     errFind()
+        // }
+        // if(props.errors){
+        //     console.log(props.errors)
+        //     toast.error(props.errors.email)
+        //     toast.error(props.errors.password)
+        //     toast.error(props.errors.passwordinCorrect)
+        //     toast.error(props.errors.emailnotfound)
+        //     setErr(props.errors)
+        //  }
+        // console.log(err)
     })
-    
-
+    useEffect(()=>{
+        if(props.errors){
+            console.log(props.errors)
+            toast.error(props.errors.email)
+            toast.error(props.errors.password)
+            toast.error(props.errors.passwordinCorrect)
+            toast.error(props.errors.emailnotfound)
+            setErr(props.errors)
+         }
+    },[props.errors])
+      
    const  onsubmit=e=>{
         e.preventDefault();
-
         const userData = {
             email: log.email,
             password: log.password
@@ -39,13 +60,14 @@ const Login =(props)=>{
     };
 
     return(
-        <form onSubmit={onsubmit}>
+       <> <form onSubmit={onsubmit}>
             <label>Email</label>
             <input onChange={handleOnChange} value={log.email} name="email" type="email"/>
             <label>Password</label>
             <input onChange={handleOnChange} value={log.password} name="password" type="password"/>
             <button type='submit'>Submit</button>
         </form>
+         <ToastContainer/></>
     )
 
 }

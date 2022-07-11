@@ -26,6 +26,7 @@ router.route('/register').post((req,res)=>{
             const newUser = new User({
                 name: req.body.name,
                 email: req.body.email,
+                empId: req.body.empId,
                 password:req.body.password
             });
             
@@ -48,7 +49,7 @@ router.route('/login').post((req,res)=>{
     const {errors,isValid} = loginValidate(req.body);
 
     if(!isValid){
-        return res.status(400).json(console.log(errors));
+        return res.status(400).json(errors);
     }
 
     const email = req.body.email;
@@ -58,7 +59,7 @@ router.route('/login').post((req,res)=>{
 
     User.findOne({email}).then(user=>{
         if(!user){
-            return res.status(404).json({emailnotfound: 'email not found'})
+            return res.status(404).json({emailnotfound: 'Email Not Found 😣'})
         }
 
         bcrypt.compare(password,user.password)
@@ -67,7 +68,8 @@ router.route('/login').post((req,res)=>{
 
                 const payload = {
                     id : user.id,
-                    name: user.name
+                    name: user.name,
+                    empId: user.empId
                 };
 
                 jwt.sign(
@@ -82,7 +84,7 @@ router.route('/login').post((req,res)=>{
                     }
                 )
             }else{
-                return res.status(400).json({passwordinCorrect:'password in correct'})
+                return res.status(400).json({passwordinCorrect:'Password Incorrect 😲'})
             }
         })
     })

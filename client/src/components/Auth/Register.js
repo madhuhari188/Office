@@ -6,7 +6,7 @@ import { registerUser } from '../../actions/authActions';
 
 const Register = (props) =>{
     const navigate = useNavigate();
-    const [reg,setReg] = useState({name:'',email:'',password:'',password2:''});
+    const [reg,setReg] = useState({name:'',empId:'',email:'',password:'',password2:''});
 
     useEffect(()=>{
         if(props.auth.isAuthenticated){
@@ -24,6 +24,7 @@ const Register = (props) =>{
 
         const userData = {
             name:reg.name,
+            empId:reg.empId,
             email: reg.email,
             password: reg.password,
             password2: reg.password2
@@ -36,6 +37,8 @@ const Register = (props) =>{
         <form onSubmit={onsubmit}>
         <label>Name</label>
         <input onChange={handleOnChange} value={reg.name} name="name" type="text"/>
+        <label>Employee ID</label>
+        <input onChange={handleOnChange} value={reg.empId} name="empId" type="text"/>
         <label>Email</label>
         <input onChange={handleOnChange} value={reg.email} name="email" type="email"/>
         <label>Password</label>
