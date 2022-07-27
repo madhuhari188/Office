@@ -80,6 +80,28 @@ router.route('/fetch/report/').get((req,res)=>{
     // .then(analyst=>res.json(analyst))
     // .catch(err=>res.status(400).json('err'+err))
 })
+router.route('/fetch/user/').get((req,res)=>{
+    const sDate = req.query.sDate
+    const eDate = req.query.eDate
+    const empId = req.query.empId
+
+    Analyst.find({empId:empId,createdAt:{$gte:new Date(sDate),$lte: new Date(eDate)}})
+    .then(analyst=>res.json(analyst))
+    .catch(err=>res.status(400).json('err'+err))
+    // if(empId === ''){
+    //     Analyst.find({createdAt:{$gte:new Date(sDate),$lte: new Date(eDate)}})
+    // .then(analyst=>res.json(analyst))
+    // .catch(err=>res.status(400).json('err'+err))
+    // }else{
+    //     Analyst.find({empId:empId,createdAt:{$gte:new Date(sDate),$lte: new Date(eDate)}})
+    // .then(analyst=>res.json(analyst))
+    // .catch(err=>res.status(400).json('err'+err))
+    // }
+    // Analyst.find({empId:'020',createdAt:{$gte:new Date('2022-06-23'),$lte: new Date('2022-07-08')}})
+    // .then(analyst=>res.json(analyst))
+    // .catch(err=>res.status(400).json('err'+err))
+})
+
 
 router.route('/fetch').get((req,res)=>{
     const date = req.query.createdAt

@@ -23,17 +23,18 @@ import { RiPencilLine } from "react-icons/ri";
 import { BiCog } from "react-icons/bi";
 import { NavLink,Link } from "react-router-dom";
 import {FcHome} from 'react-icons/fc'
-
+import {useSelector} from 'react-redux';
 //import sidebar css from react-pro-sidebar module and our custom css
 import "react-pro-sidebar/dist/css/styles.css";
 import "./Nav.css";
 import logo from '../../assets/logo.jpg'
-const NavBar = () => {
+const NavBar = (isLogged) => {
   //create initial menuCollapse state using useState hook
   const [menuCollapse, setMenuCollapse] = useState(false);
 
   const [activePage, setActivePage] = useState(null) ;
-
+  // const role = useSelector(state=>state.auth.user.role)
+  const role = 'admin'
 function handleActive(event) {
   if (!event.target.classList.value.includes("active")) {
     event.target.classList.toggle('active') ;
@@ -47,7 +48,7 @@ function handleActive(event) {
     //condition checking to change state from true to false and vice versa
     menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);
   };
-
+console.log()
   return (
     <>
       <div id="header">
@@ -65,11 +66,11 @@ function handleActive(event) {
               <MenuItem onClick={handleActive} icon={<FcHome/>}>
                 Home<Link to='/'/>
               </MenuItem>
-             
-              <MenuItem  icon={<FaList />}>Report<NavLink  to="/csv"></NavLink></MenuItem>
-              <MenuItem icon={<FaRegHeart />}>Login<Link to='/login'/></MenuItem>
-              <MenuItem icon={<RiPencilLine />}>Dashboard<Link to='/dashboard'/></MenuItem>
-              <MenuItem icon={<BiCog />}>Register<Link to='/register'/></MenuItem>
+              {isLogged.isLogged?
+             <> <MenuItem icon={<RiPencilLine />}>Dashboard<Link to='/dashboard'/></MenuItem>
+              <MenuItem  icon={<FaList />}>Report<NavLink  to="/csv"></NavLink></MenuItem></>  :<> <MenuItem icon={<FaRegHeart />}>Login<Link to='/login'/></MenuItem>
+              <MenuItem icon={<BiCog />}>Register<Link to='/register'/></MenuItem></>}
+              {role==="admin"?<MenuItem icon={<FiArrowLeftCircle/>}>OK<Link to='/register'/></MenuItem>:''}
             </Menu>
           </SidebarContent>
           <SidebarFooter>

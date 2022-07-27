@@ -3,10 +3,18 @@ import {Route,Navigate} from 'react-router-dom';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
-const PrivateRoute = ({ isLogged,children})=>{
-    if(!isLogged){
+const PrivateRoute = ({ isValid,children})=>{
+   
+
+   
+    if(!isValid){
+        
         return <Navigate to="/login"/>  
      }
+     
+    //   if(isLogged){
+    //     return children
+    //  }
     return  children
 }
 

@@ -3,6 +3,7 @@ import Papa, { parse } from 'papaparse';
 import {useSelector} from 'react-redux' 
 import axios from 'axios';
 import convert from 'convert-seconds-to-human'
+import {Link} from 'react-router-dom';
 import moment from 'moment';
 
 export default function CSV (){
@@ -12,7 +13,7 @@ export default function CSV (){
     const [soo,setSoo] = useState([]);
     // const [total,setTotal] = useState([]);
     const [report,setReport] = useState([]);
-    const [start,setStart] = useState({startDate:'',endDate:''})
+    const [start,setStart] = useState({startDate:'',endDate:'',empId:''})
     const style ={border:'1px solid #000'}
     const empId=  useSelector( state=> state.auth.user.empId)
     const handleFileUpload = (e) =>{
@@ -139,16 +140,27 @@ export default function CSV (){
 
      const onSearch=(e)=>{
       e.preventDefault();
-      console.log(start.startDate,start.endDate)
+      console.log(start.startDate,start.endDate,start.empId)
       const sDate = start.startDate;
       const eDate = start.endDate;
+      const empId = start.empId;
+      if(empId){
+        axios.get('http://localhost:5000/analyst/fetch/report/?sDate='+sDate+'&eDate='+eDate+'&empId='+empId)
+        .then((res)=>{
+          console.log(res.data)
+          setReport(res.data)
+        })
+        .catch(err=>console.log('Error: '+err))
+      }else{
+        axios.get('http://localhost:5000/analyst/fetch/date/?sDate='+sDate+'&eDate='+eDate)
+        .then((res)=>{
+          console.log(res.data)
+          setReport(res.data)
+        })
+        .catch(err=>console.log('Error: '+err))
+      }
       // console.log('http://localhost:5000/analyst/fetch/date/?sDate='+sDate+'&eDate'+eDate)
-      axios.get('http://localhost:5000/analyst/fetch/date/?sDate='+sDate+'&eDate='+eDate)
-      .then((res)=>{
-        console.log(res.data)
-        setReport(res.data)
-      })
-      .catch(err=>console.log('Error: '+err))
+      
      }
      const cal=()=>{
       
@@ -175,7 +187,7 @@ export default function CSV (){
     // }
 
     useEffect(()=>{
-      var so = 0;var sa =0
+      var so = 0;var sa =
       soo.map((item)=>{
           so += item.week;
           sa += item.TotalTime;
@@ -186,7 +198,7 @@ export default function CSV (){
 
     return(
         <>
-        <style>{"table { border: 2px solid forestgreen}th {border - bottom: 1px solid black;}"}</style>
+        <style>{"table,th,td { border: 1px solid #000; border-collapse: collapse;text-align: center}"}</style>
         <div>
         <input type="file" accept=".csv" onChange={handleFileUpload} />
 
@@ -228,6 +240,7 @@ export default function CSV (){
 
         <input type='date' name='startDate' value={start.startDate} onChange={onDate}  />
         <input type='date' name='endDate' value={start.endDate} onChange={onDate}  />
+        <input type='text' name='empId' value={start.empId} onChange={onDate}  placeholder='emp Id' />
         <button type="submit" >Search</button>
         </form>
         
@@ -244,16 +257,16 @@ export default function CSV (){
          <p>{arr.AciveSec.hours} Hours:{arr.AciveSec.minutes} Minutes</p>
          </div>
          <table>
-            <th>
-                <tr>
-                    <td> S.No</td>
-                    <td>Emp ID</td>
-                    <td>Active Time</td>
-                    <td>Total Time</td>
-                    <td>Week</td>
-                    <td>Date</td>
-                </tr>
-            </th>
+          {/* <thead> */}
+            <tr>
+                    <th> S.No</th>
+                    <th>Emp ID</th>
+                    <th>Active Time</th>
+                    <th>Total Time</th>
+                    <th>Week</th>
+                    <th>Date</th>
+            </tr>
+            {/* </thead> */}
             <tbody>
         {report.map((item, index) => {
           return(
@@ -261,8 +274,8 @@ export default function CSV (){
             <tr id={index}>
               <td>{index+1}</td>
               <td>{item.empId}</td>
-              <td>{item.TotalTime}</td>
-              <td>{item.ActiveTime}</td>
+              <td>{moment.utc(moment.duration(item.TotalTime,'seconds').as('milliseconds')).format('HH:mm:ss')}</td>
+              <td>{moment.utc(moment.duration(item.ActiveTime,'seconds').as('milliseconds')).format('HH:mm:ss')}</td>
               <td>{item.week}</td>
               <td>{moment(item.createdAt).format('DD/MM/YYYY')}</td>
             </tr>

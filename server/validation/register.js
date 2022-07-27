@@ -16,7 +16,7 @@ function registerValidate  (data){
     }
 
     if(Validator.isEmpty(data.empId)){
-      errors.empId = 'Employess Id Is Required'
+      errors.empId = 'Employees Id Is Required'
     }
 
     if (Validator.isEmpty(data.email)) {

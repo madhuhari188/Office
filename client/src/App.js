@@ -9,7 +9,7 @@ import Data from './components/Data';
 import NavBar from './components/Navbar/NavBar';
 import Home from './components/Home/Home';
 import Login from './components/Auth/Login';
-
+import Edit from './components/Edit';
 import jwt_decode from 'jwt-decode';
 import {setCurrentUser,logoutUser} from './actions/authActions'
 // import {Provider} from 'react-redux'
@@ -23,6 +23,7 @@ import Register from './components/Auth/Register';
 function App() {
 
   const isLogged = useSelector(state => state.auth.isAuthenticated);
+  const role = useSelector(state => state.auth.user.role)
   console.log(isLogged)
 
   if (localStorage.jwtToken) {
@@ -43,17 +44,20 @@ function App() {
       window.location.href = "./login";
     }
   }
+  // const roles = 'admin'
+  // console.log((isLogged && roles==="admin"))
 
   return (
     <>
-    <NavBar/>
+    <NavBar isLogged={isLogged}/>
     <div style={{marginLeft:'250px'}}>
     <Routes>
       <Route exact path="/csv" element={<CSV4/>}></Route>
       <Route exact path="/login" element={<Login/>}></Route>
+      <Route exact path="/edit/:id" element={<Edit/>}></Route>
       <Route exact path="/register" element={<Register/>}></Route>
       <Route path="/" element={<Home/>}></Route>
-      <Route path="/dashboard" element= {<PrivateRoute isLogged={isLogged}><Dashboard/></PrivateRoute>} />
+      <Route path="/dashboard" element= {<PrivateRoute isValid={(isLogged&&role==='admin')}><Dashboard/></PrivateRoute>} />
       {/* <Route path="/dashboard" element={<Dashboard/>}></Route> */}
     </Routes></div>
     </>

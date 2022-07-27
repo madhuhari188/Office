@@ -6,6 +6,7 @@ import {checkIn} from '../actions/checkActions';
 import axios from "axios";
 import { ToastContainer,toast } from "react-toastify";
 import moment from 'moment';
+import {Link} from 'react-router-dom';
 const Dashboard = (props) =>{
 
     const [data,setData] = useState()
@@ -16,14 +17,20 @@ const Dashboard = (props) =>{
     const [remain,setRemain] = useState();
     // const [outTime,setOutTime] = useState();
     const [isDisabled,setDisabled] = useState(false);
-     
+    const [Puser,setpUser] = useState([])
 
     const name =  useSelector( state=> state.auth.user.name);
     const img = "https://ui-avatars.com/api/?name="+name
    useEffect(()=>{
     toasty()
     setUser({name:name,img:img})
-    
+   
+   },[])
+
+   useEffect(()=>{
+    axios.get("api/user/allusers")
+    .then((res)=>{ setpUser(res.data)})
+    .catch(err=>console.log(err))
    },[])
 
    const toasty =()=>{
@@ -32,13 +39,15 @@ const Dashboard = (props) =>{
 
     function calc(checkoutTime){
         // setInterval(()=>{})
-        const time = new Date()
+        var time = new Date();
         // const checkoutTime = moment(ctime).add(570,'minutes').format('hh:mm a');
-        const f = checkoutTime;
+        var f = checkoutTime;
+        // var g = moment(time).format('hh:mm a')
         console.log(checkoutTime)
-
-    var a = moment(f,'hh:mm a')
+        console.log(moment(time,'hh:mm a'))
+        var a = moment(f,'hh:mm a')
     var b = moment(time,'hh:mm a')
+    console.log(b);
     var c = moment.duration(a.diff(b));
     var d = c.hours()+'Hours &  Minutes '+c.minutes();
         console.log(c.hours()+'Hours &  Minutes '+c.minutes())
@@ -55,6 +64,7 @@ const Dashboard = (props) =>{
         var checkTime = moment(cOut).format('hh:mm a');
         setCheckT(checkTime)
         var a = moment(ctime,'hh:mm a')
+        console.log(a)
         var b = moment(checkTime,'hh:mm a')
         var overAll = moment.duration(b.diff(a));
         console.log(overAll.minutes());
@@ -76,12 +86,13 @@ const Dashboard = (props) =>{
         var b = moment(time,'hh:mm a')
         var c = moment.duration(a.diff(b));
         calc(checkoutTime)
+        console.log(checkoutTime)
         // console.log(outTime)
         setInterval(()=>{calc(checkoutTime)},60000)
         console.log(c.hours()+'Hours &  Minutes '+c.minutes())
         console.log(moment('08:30',moment.defaultFormat).fromNow())
         setTime(timeNow);
-        setDisabled(true)
+        // setDisabled(true)
         // setOutTime(checkoutTime)
         // setTimeout(()=>{ var d = c.hours()+'Hours &  Minutes '+c.minutes();
         // console.log(c.hours()+'Hours &  Minutes '+c.minutes())
@@ -114,6 +125,28 @@ const Dashboard = (props) =>{
         <p>Your Check Out: {checkT}</p>
         <p>Your OverAll Work time: {total} minutes </p>
         <p>Your Remaining Time {remain}</p>
+        <br/><br/>
+        <table>
+            <thead>
+                <tr>
+                    <td>NO</td>
+                    <td>Name</td>
+                    <td>Edit</td>
+                </tr>
+            </thead>
+            <tbody>
+                {Puser.map((item,index)=>{
+                    return(
+                    <>
+                    <tr key={index}>
+                        <td>{index+1}</td>
+                        <td>{item.name}</td>
+                        <td><Link to={"/edit/"+item._id}>Edit</Link></td>
+                    </tr>
+                    </>)
+                })}
+            </tbody>
+        </table>
         <ToastContainer/></>
     )
 

@@ -69,7 +69,8 @@ router.route('/login').post((req,res)=>{
                 const payload = {
                     id : user.id,
                     name: user.name,
-                    empId: user.empId
+                    empId: user.empId,
+                    role: user.role,
                 };
 
                 jwt.sign(
@@ -90,6 +91,39 @@ router.route('/login').post((req,res)=>{
     })
 
 
+})
+
+
+
+router.route('/users').get((req,res)=>{
+    User.find({},'name')
+    .then(user=>res.json(user))
+    .catch((err)=>res.status(400).json('Error:'+err))
+})
+router.route('/allusers').get((req,res)=>{
+    User.find()
+    .then(user=>res.json(user))
+    .catch((err)=>res.status(400).json('Error:'+err))
+})
+
+router.route('/:id').get((req,res)=>{
+    User.findById(req.params.id)
+    .then(user=>res.json(user))
+    .catch(err=>res.status(400).json('Error:'+err));
+});
+
+router.route('/update/:id').post((req,res)=>{
+    User.findById(req.params.id)
+    .then(user=>{
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.empId = req.body.empId;
+
+        user.save()
+        .then(()=>res.json('User Updated Updated!!!'))
+        .catch(err=>res.status(400).json('Error'+err))
+    })
+    .catch(err=>res.status(400).json('Error'+err))
 })
 
 export default router
